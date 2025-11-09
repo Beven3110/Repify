@@ -1,0 +1,430 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Repify</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+<style>
+    .scroll-animate {
+      opacity: 0;
+      transform: translateY(40px);
+      transition: all 0.7s ease-out;
+    }
+    .scroll-animate.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+</head>
+
+  <script>
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('show');
+        }
+      });
+    }, { threshold: 0.1 });
+
+    document.querySelectorAll('.scroll-animate').forEach(el => observer.observe(el));
+  </script>
+  <style>
+    /* ---------- Global animation + card styles ---------- */
+    .hover-card {
+      transition: transform 0.35s cubic-bezier(.2,.9,.2,1), box-shadow 0.35s;
+      transform: translateY(0);
+      will-change: transform;
+    }
+    .hover-card:hover {
+      transform: translateY(-10px);
+      box-shadow: 0 18px 40px rgba(15,23,42,0.12);
+    }
+
+    /* subtle inner lift for buttons */
+    .btn-hover {
+      transition: transform 0.25s ease, box-shadow 0.25s ease;
+    }
+    .btn-hover:hover {
+      transform: translateY(-6px);
+      box-shadow: 0 10px 30px rgba(59,130,246,0.12);
+    }
+
+    /* menu link box hover */
+    .nav-btn {
+      transition: transform 0.25s ease, background-color 0.25s ease, color 0.25s ease;
+      padding: .5rem .9rem;
+      border-radius: .5rem;
+    }
+    .nav-btn:hover {
+      transform: translateY(-4px);
+      background: rgba(79,70,229,0.08);
+      color: #4f46e5;
+      box-shadow: 0 8px 20px rgba(79,70,229,0.06);
+    }
+
+    /* float up & down on hover (for decorative sections) */
+    @keyframes floatUpDown {
+      0%,100% { transform: translateY(0); }
+      50% { transform: translateY(-8px); }
+    }
+    .float-hover:hover { animation: floatUpDown 1.8s ease-in-out infinite; }
+
+    /* Fade-in + slide-up (reveal) */
+    .animate-on-scroll {
+      opacity: 0;
+      transform: translateY(22px);
+      transition: opacity 0.7s ease-out, transform 0.7s ease-out;
+    }
+    .animate-on-scroll.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    /* FAQ card expand style (answers visible by default) */
+    .faq-q { font-weight: 600; }
+    .faq-a { margin-top: .5rem; color: #4b5563; }
+
+    /* small responsive fixes */
+    @media (prefers-reduced-motion: reduce) {
+      .hover-card, .btn-hover, .float-hover { transition: none !important; animation: none !important; }
+    }
+  </style>
+</head>
+
+<body class="min-h-screen bg-gray-50 text-gray-800 antialiased">
+
+  <!-- HEADER -->
+  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-sm border-b border-gray-100">
+    <div class="max-w-6xl mx-auto px-6 py-4 flex items-center justify-between">
+      <div class="flex items-center gap-3">
+        <img src="images/logo.png" alt="Repify logo" class="w-10 h-10 rounded-lg hover-card" />
+        <div>
+          <h1 class="text-lg font-semibold">Repify</h1>
+          <p class="text-xs text-gray-500">Automated Review Management System</p>
+        </div>
+      </div>
+
+      <!-- Desktop nav -->
+      <nav id="main-nav" class="hidden md:flex items-center gap-4 text-sm">
+        <a href="#features" class="nav-btn menu-link">Features</a>
+        <a href="#pricing" class="nav-btn menu-link">Pricing</a>
+        <a href="#customers" class="nav-btn menu-link">Customers</a>
+        <a href="#contact" class="nav-btn menu-link bg-indigo-600 text-white px-4 py-2 rounded-lg shadow btn-hover">Start 14-day Trial</a>
+      </nav>
+
+      <!-- Mobile menu button -->
+      <div class="md:hidden">
+        <button id="mobileToggle" aria-expanded="false"
+                class="p-2 rounded-lg bg-white shadow nav-btn">
+          <svg id="menuIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none"
+               viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M4 6h16M4 12h16M4 18h16" />
+          </svg>
+          <svg id="closeIcon" xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 hidden" fill="none"
+               viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+            <path stroke-linecap="round" stroke-linejoin="round"
+                  d="M6 18L18 6M6 6l12 12" />
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile nav panel -->
+    <div id="mobilePanel" class="md:hidden max-w-6xl mx-auto px-6 pb-4 hidden">
+      <div class="flex flex-col gap-2">
+        <a href="#features" class="px-4 py-3 rounded-lg nav-btn">Features</a>
+        <a href="#pricing" class="px-4 py-3 rounded-lg nav-btn">Pricing</a>
+        <a href="#customers" class="px-4 py-3 rounded-lg nav-btn">Customers</a>
+        <a href="#contact" class="px-4 py-3 rounded-lg nav-btn bg-indigo-600 text-white">Start 14-day Trial</a>
+      </div>
+    </div>
+  </header>
+
+  <main class="max-w-6xl mx-auto px-6">
+
+    <!-- HERO -->
+    <section class="grid md:grid-cols-2 gap-8 items-center py-12 animate-on-scroll">
+      <div>
+        <h2 class="text-4xl font-extrabold leading-tight">Get more 5-star reviews without lifting a finger</h2>
+        <p class="mt-4 text-lg text-gray-600">Automatically route happy customers to Google Reviews, capture private feedback from unhappy customers, and reply professionally — all for one simple monthly fee.</p>
+
+        <div class="mt-6 flex flex-wrap gap-4">
+          <a href="#pricing" class="inline-flex items-center gap-3 bg-indigo-600 text-white px-5 py-3 rounded-lg shadow btn-hover">Start Free Trial</a>
+          <a href="#demo" class="inline-flex items-center gap-3 border border-gray-200 px-5 py-3 rounded-lg nav-btn">Watch Demo</a>
+        </div>
+
+        <div class="mt-8 grid grid-cols-3 gap-4 text-sm text-gray-600">
+          <div class="p-4 bg-white rounded-lg shadow hover-card">
+            <div class="font-bold">$278</div>
+            <div class="text-xs">/month — All in, done for you</div>
+          </div>
+          <div class="p-4 bg-white rounded-lg shadow hover-card">
+            <div class="font-bold">100%</div>
+            <div class="text-xs">of businesses have profited</div>
+          </div>
+          <div class="p-4 bg-white rounded-lg shadow hover-card">
+            <div class="font-bold">2–3+</div>
+            <div class="text-xs">Extra customers / month pays for itself</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="space-y-6">
+        <div class="p-6 bg-white rounded-2xl shadow-md hover-card float-hover">
+          <div class="flex items-center justify-between">
+            <div>
+              <div class="text-sm text-gray-500">Live demo QR</div>
+              <div class="mt-3 flex gap-3 items-center">
+                <div class="w-32 h-32 bg-gray-100 rounded-lg flex items-center justify-center hover-card">QR</div>
+                <div>
+                  <div class="font-semibold">Customer Scans QR</div>
+                  <div class="text-sm text-gray-500 mt-1">Happy → Google Review • Unhappy → Private Message</div>
+                </div>
+              </div>
+            </div>
+            <div class="text-xs text-gray-400">Preview</div>
+          </div>
+
+          <div class="mt-6 grid grid-cols-3 gap-3">
+            <div class="p-3 bg-gray-50 rounded-lg text-center hover-card">
+              <div class="text-2xl font-bold">4.7★</div>
+              <div class="text-xs text-gray-500">Average Rating</div>
+            </div>
+            <div class="p-3 bg-gray-50 rounded-lg text-center hover-card">
+              <div class="text-2xl font-bold">+42</div>
+              <div class="text-xs text-gray-500">New 5★ Reviews</div>
+            </div>
+            <div class="p-3 bg-gray-50 rounded-lg text-center hover-card">
+              <div class="text-2xl font-bold">73%</div>
+              <div class="text-xs text-gray-500">Increase in new customers</div>
+            </div>
+          </div>
+        </div>
+
+        <div class="p-6 bg-gradient-to-tr from-indigo-50 to-white rounded-2xl border border-gray-100 hover-card animate-on-scroll">
+          <h4 class="font-semibold">What's included</h4>
+          <ul class="mt-3 text-sm text-gray-600 space-y-2">
+            <li>QR + short link landing page to collect reviews</li>
+            <li>Smart routing to Google or private feedback for improvement</li>
+            <li>Monthly reputation report</li>
+          </ul>
+        </div>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section id="features" class="py-12 animate-on-scroll">
+      <h3 class="text-2xl font-bold">Features that actually move the needle</h3>
+      <div class="mt-6 grid md:grid-cols-3 gap-6">
+        <div class="p-6 bg-white rounded-2xl shadow hover-card float-hover">
+          <h4 class="font-semibold">Smart QR Funnels</h4>
+          <p class="mt-2 text-sm text-gray-600">Custom QR codes and short links that route customers based on feedback.</p>
+        </div>
+        <div class="p-6 bg-white rounded-2xl shadow hover-card float-hover">
+          <h4 class="font-semibold">Boost Reviews Across Platforms</h4>
+          <p class="mt-2 text-sm text-gray-600">Increase positive reviews and grow your reputation on Google, Facebook, Yelp, etc.</p>
+        </div>
+        <div class="p-6 bg-white rounded-2xl shadow hover-card float-hover">
+          <h4 class="font-semibold">Private Negative Workflow</h4>
+          <p class="mt-2 text-sm text-gray-600">Unhappy customers are routed privately so you can fix issues before they go public.</p>
+        </div>
+        <div class="p-6 bg-white rounded-2xl shadow hover-card float-hover">
+          <h4 class="font-semibold">Local SEO Boosts</h4>
+          <p class="mt-2 text-sm text-gray-600">More reviews and active responses help your Google ranking in local searches.</p>
+        </div>
+        <div class="p-6 bg-white rounded-2xl shadow hover-card float-hover">
+          <h4 class="font-semibold">Reporting & Alerts</h4>
+          <p class="mt-2 text-sm text-gray-600">Monthly Reports and instant alerts for new negative reviews.</p>
+        </div>
+        <div class="p-6 bg-white rounded-2xl shadow hover-card float-hover">
+          <h4 class="font-semibold">Integrations</h4>
+          <p class="mt-2 text-sm text-gray-600">WordPress, Shopify, Google Business Profile, SMS & Email providers.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- PRICING -->
+    <section id="pricing" class="py-12 animate-on-scroll">
+      <h3 class="text-2xl font-bold">Pricing</h3>
+      <div class="mt-6 grid md:grid-cols-3 gap-6">
+        <div class="p-6 bg-white rounded-2xl shadow hover-card float-hover">
+          <div class="text-sm text-gray-500">Starter</div>
+          <div class="mt-4 text-3xl font-extrabold">$278 <span class="text-base font-medium">/mo</span></div>
+          <div class="mt-3 text-sm text-gray-600">Perfect for single-location businesses. Everything in the core funnel included.</div>
+          <ul class="mt-4 space-y-2 text-sm text-gray-600">
+            <li>Custom QR + landing page</li>
+            <li>AI replies (up to 500 reviews)</li>
+            <li>Monthly reporting</li>
+            <li>Priority email support</li>
+          </ul>
+          <a href="#contact" class="mt-6 inline-block bg-indigo-600 text-white px-4 py-2 rounded-lg btn-hover">Get Started</a>
+        </div>
+
+        <div class="p-6 bg-gradient-to-tr from-white to-indigo-50 rounded-2xl border border-indigo-100 shadow-lg hover-card float-hover">
+          <div class="text-sm text-indigo-600">Most Popular</div>
+          <div class="mt-4 text-3xl font-extrabold">$499 <span class="text-base font-medium">/mo</span></div>
+          <div class="mt-3 text-sm text-gray-600">Multi-location + advanced integrations</div>
+          <ul class="mt-4 space-y-2 text-sm text-gray-600">
+            <li>Everything in Starter</li>
+            <li>SMS prompts & templates</li>
+            <li>40+ location management</li>
+          </ul>
+          <a href="#contact" class="mt-6 inline-block bg-indigo-600 text-white px-4 py-2 rounded-lg btn-hover">Book a Demo</a>
+        </div>
+
+        <div class="p-6 bg-white rounded-2xl shadow hover-card float-hover">
+          <div class="text-sm text-gray-500">Enterprise</div>
+          <div class="mt-4 text-3xl font-extrabold">Custom</div>
+          <div class="mt-3 text-sm text-gray-600">White glove onboarding, SLAs, and dedicated reps.</div>
+          <a href="#contact" class="mt-6 inline-block bg-indigo-600 text-white px-4 py-2 rounded-lg btn-hover">Contact Sales</a>
+        </div>
+      </div>
+    </section>
+
+    <!-- TESTIMONIALS -->
+    <section id="customers" class="py-12 animate-on-scroll">
+      <h3 class="text-2xl font-bold">Loved by local businesses</h3>
+      <div class="mt-6 grid md:grid-cols-3 gap-6">
+        <div class="p-6 bg-gradient-to-tr from-white to-indigo-50 rounded-2xl shadow hover-card float-hover">
+          <div class="text-sm text-gray-500">Bella's Bakery</div>
+          <div class="mt-3 font-medium">"Our Google rating jumped from 3.8 to 4.6 in 6 weeks. New customers are calling every day."</div>
+        </div>
+        <div class="p-6 bg-gradient-to-tr from-white to-indigo-50 rounded-2xl shadow hover-card float-hover">
+          <div class="text-sm text-gray-500">Peak Dental</div>
+          <div class="mt-3 font-medium">"The private feedback flow saved us from public complaints and improved patient care."</div>
+        </div>
+        <div class="p-6 bg-gradient-to-tr from-white to-indigo-50 rounded-2xl shadow hover-card float-hover">
+          <div class="text-sm text-gray-500">Studio 9 Salon</div>
+          <div class="mt-3 font-medium">"Set up was simple and we saw results in the first month — highly recommend."</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- FAQ + CONTACT -->
+    <section id="contact" class="py-12 grid md:grid-cols-2 gap-8 animate-on-scroll">
+      <!-- FAQ Column (answers visible by default) -->
+      <div>
+        <h3 class="text-2xl font-bold">Frequently asked questions</h3>
+        <div class="mt-6 space-y-4 text-sm text-gray-600">
+          <div class="p-4 bg-white rounded-lg shadow hover-card">
+            <div class="faq-q">Is this allowed by Google?</div>
+            <div class="faq-a">We use allowed prompts and route public review links to Google. We do not solicit fake reviews. Our flow encourages genuine customers to leave reviews.</div>
+          </div>
+
+          <div class="p-4 bg-white rounded-lg shadow hover-card">
+            <div class="faq-q">How long does it take to see results?</div>
+            <div class="faq-a">Most businesses see measurable improvement inside 4–8 weeks once the QR funnel is in place.</div>
+          </div>
+
+          <div class="p-4 bg-white rounded-lg shadow hover-card">
+            <div class="faq-q">Why is it so expensive?</div>
+            <div class="faq-a">Think about what it’s worth to look professional and trusted in front of your customers. Our system helps you build real trust, attract new business, and protect your reputation — often paying for itself through new customers.</div>
+          </div>
+
+          <div class="p-4 bg-white rounded-lg shadow hover-card">
+            <div class="faq-q">Can I cancel anytime?</div>
+            <div class="faq-a">Yes — you can cancel your subscription from the dashboard at any time. No hidden fees or long-term lock-ins.</div>
+          </div>
+
+          <div class="p-4 bg-white rounded-lg shadow hover-card">
+            <div class="faq-q">Do you offer support or setup help?</div>
+            <div class="faq-a">Absolutely. Our onboarding includes QR creation, landing page setup, and integration assistance. Ongoing support is available via email and chat.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact / Booking Column -->
+      <div class="p-6 bg-white rounded-2xl shadow hover-card">
+        <h4 class="font-semibold">Book a setup call</h4>
+        <p class="text-sm text-gray-500 mt-1">We'll build your QR, landing page, and setup integrations.</p>
+        <form class="mt-4 space-y-3" action="/api/signup" method="POST">
+          <div>
+            <label class="text-xs text-gray-500">Business name</label>
+            <input name="business" required class="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2" />
+          </div>
+          <div>
+            <label class="text-xs text-gray-500">Email</label>
+            <input name="email" type="email" required class="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2" />
+          </div>
+          <div>
+            <label class="text-xs text-gray-500">Phone (optional)</label>
+            <input name="phone" class="mt-1 w-full border border-gray-200 rounded-lg px-3 py-2" />
+          </div>
+          <div class="flex gap-3">
+            <button type="submit" class="flex-1 bg-indigo-600 text-white px-4 py-2 rounded-lg btn-hover">Request Setup</button>
+            <a href="#pricing" class="px-4 py-2 border border-gray-200 rounded-lg nav-btn">See Pricing</a>
+          </div>
+        </form>
+      </div>
+    </section>
+
+    <footer class="py-12 text-center text-sm text-gray-500">© 2025 Repify · Built for local businesses</footer>
+  </main>
+
+  <!-- ---------- Scripts: mobile toggle, scroll reveal, nav highlight ---------- -->
+  <script>
+    // Mobile menu toggle
+    const mobileToggle = document.getElementById('mobileToggle');
+    const mobilePanel = document.getElementById('mobilePanel');
+    const menuIcon = document.getElementById('menuIcon');
+    const closeIcon = document.getElementById('closeIcon');
+
+    mobileToggle?.addEventListener('click', () => {
+      const open = mobilePanel.classList.toggle('hidden');
+      // toggle icons (we use hidden class opposite because toggle returns boolean of presence)
+      if (mobilePanel.classList.contains('hidden')) {
+        menuIcon.classList.remove('hidden');
+        closeIcon.classList.add('hidden');
+        mobileToggle.setAttribute('aria-expanded','false');
+      } else {
+        menuIcon.classList.add('hidden');
+        closeIcon.classList.remove('hidden');
+        mobileToggle.setAttribute('aria-expanded','true');
+      }
+    });
+
+    // Simple nav highlight on click + smooth scroll
+    document.querySelectorAll('.menu-link').forEach(a => {
+      a.addEventListener('click', (e) => {
+        // smooth scroll
+        e.preventDefault();
+        const href = a.getAttribute('href');
+        document.querySelector(href)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+        // desktop highlight
+        document.querySelectorAll('.menu-link').forEach(x => x.classList.remove('bg-indigo-600','text-white','px-4','py-2','rounded-lg'));
+        a.classList.add('bg-indigo-600','text-white','px-4','py-2','rounded-lg');
+      });
+    });
+
+    // IntersectionObserver reveal for animate-on-scroll
+    const io = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          entry.target.classList.add('visible');
+          // keep visible, no unobserve to avoid flicker
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.animate-on-scroll').forEach(el => io.observe(el));
+
+    // make all hover cards accessible via keyboard focus (lift on focus)
+    document.querySelectorAll('.hover-card').forEach(c => {
+      c.setAttribute('tabindex','0');
+      c.addEventListener('focus', () => c.classList.add('hover'));
+      c.addEventListener('blur', () => c.classList.remove('hover'));
+    });
+
+    // Reduce motion: respect user preference (optional extra)
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      document.querySelectorAll('.hover-card, .btn-hover, .float-hover').forEach(el => {
+        el.style.transition = 'none';
+        el.style.animation = 'none';
+      });
+    }
+  </script>
+</body>
+</html>
